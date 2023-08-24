@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZSJ CARD VIEWER</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    #characterContainer {
+      max-width: 85%; /* 이미지가 표시되는 범위를 화면의 85%로 설정 */
+      margin: 20px;
+      overflow-y: scroll;
+      max-height: 80vh;
+    }
+
+    #characterList {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .character {
+      width: calc(12.5% - 20px);
+      margin: 10px;
+      transition: transform 0.2s;
+      overflow: hidden;
+      width: 10.625%; /* 캐릭터의 가로 길이를 화면의 85% / 8로 설정 */
+      padding-bottom: 10.625%; /* 캐릭터의 세로 길이를 가로 길이에 맞추어 정사각형으로 설정 */
+      position: relative;
+    }
+
+    .character img {
+      position: absolute;
+      width: 100%; /* 이미지 크기를 부모 요소에 맞게 조절 */
+      height: 100%; /* 이미지 크기를 부모 요소에 맞게 조절 */
+      object-fit: cover; /* 이미지 비율 유지하면서 부모 요소에 맞춤 */
+      transition: transform 0.2s; /* 스케일 변화에 대한 트랜지션 */
+    }
+
+    .character:hover img {
+      transform: scale(1.1); /* 마우스 호버시 이미지 크게 보이게 스케일 조정 */
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* 모달 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .modal img {
+      max-width: 85%;
+      max-height: 85%;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 40px;
+      color: white;
+      cursor: pointer;
+      padding: 10px;
+    }
+  </style>
+  <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+      const enterButton = document.getElementById('enterButton');
+      const characterContainer = document.getElementById('characterContainer');
+      const characterList = document.getElementById('characterList');
+      const modal = document.getElementById('modal');
+      const modalImg = document.getElementById('modalImg');
+      const closeModal = document.getElementById('closeModal');
+      const totalCharacters = 64; // 1.jpg부터 64.jpg까지
+      const charactersPerRow = 8; // 1줄에 배치될 캐릭터 수
+
+      enterButton.addEventListener('click', () => {
+        enterButton.style.display = 'none';
+        characterContainer.classList.remove('hidden');
+
+        for (let i = 1; i <= totalCharacters; i++) {
+          const character = document.createElement('div');
+          character.classList.add('character');
+          
+          const characterImage = document.createElement('img');
+          characterImage.src = `${i}.jpg`;
+          
+          character.appendChild(characterImage);
+          characterList.appendChild(character);
+          
+          character.addEventListener('click', () => {
+            modal.style.display = 'block';
+            modalImg.src = `s${i}.jpg`;
+          });
+
+          // 매 charactersPerRow마다 줄 바꿈
+          if (i % charactersPerRow === 0) {
+            const lineBreak = document.createElement('br');
+            characterList.appendChild(lineBreak);
+          }
+        }
+      });
+
+      closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+    });
+  </script>
+</head>
+<body>
+  <button id="enterButton">입장</button>
+  <div id="characterContainer" class="hidden">
+    <div id="characterList"></div>
+  </div>
+  
+  <!-- 모달 팝업 -->
+  <div id="modal" class="modal">
+    <span id="closeModal" class="close">&times;</span>
+    <div class="modal-content">
+      <img id="modalImg" src="" alt="">
+    </div>
+  </div>
+</body>
+</html>
